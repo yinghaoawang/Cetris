@@ -22,7 +22,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{de196f9e-37f5-4965-af78-e97e4f638b4f}</ProjectGuid>
-    <RootNamespace>Cetris3</RootNamespace>
+    <RootNamespace>Cetris</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -146,9 +146,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Cetris\Runner.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.MD" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Cetris\Runner.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
