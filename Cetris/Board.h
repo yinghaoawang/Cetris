@@ -7,18 +7,22 @@ namespace Cetris {
 	public:
 		static const int WIDTH = 10;
 		static const int HEIGHT = 20;
+		sf::Vector2f position{ 50., 20.};
 
 		Board();
-		void draw();
+		void render(sf::RenderWindow&);
 		
 
 		class Tile {
 		public:
-			Tile();
+			static const int WIDTH = 25;
+			static const int HEIGHT = 25;
+
+			Tile(sf::Color&);
 			sf::Color color;
 		};
 
 		std::vector<std::vector<Tile*>> tiles{ HEIGHT, std::vector<Tile*>(WIDTH, nullptr) };
-		std::vector<Tetromino> tetrominos();
+		std::vector<Tetromino> tetrominos;
 	};
 }

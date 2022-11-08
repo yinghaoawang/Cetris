@@ -12,6 +12,7 @@ void Runner::tick() {
 
 void Runner::render() {
 	window.clear();
+	board.render(window);
 	window.draw(rectangle);
 	window.display();
 }

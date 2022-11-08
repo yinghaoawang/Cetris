@@ -1,6 +1,5 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "Pointf.h"
 
 namespace Cetris {
 	class Tetromino {
@@ -10,11 +9,12 @@ namespace Cetris {
 			Tetromino& tetromino;
 
 			Piece(const Tetromino&);
-			Pointf localPosition;
+			sf::Vector2f localPosition;
 		};
 
+		Tetromino(sf::Color& color);
 		std::vector<Piece> pieces;
-		Pointf position;
+		sf::Vector2f position;
 		sf::Color color;
 	};
 }
