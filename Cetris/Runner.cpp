@@ -17,6 +17,8 @@ void Runner::render() {
 }
 
 void Runner::init() {
+	Board board();
+
 	rectangle.setFillColor(sf::Color::Magenta);
 	rectangle.setOutlineColor(sf::Color::Red);
 	rectangle.setOutlineThickness(-1.f);

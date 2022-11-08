@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "Board.h"
 
 namespace Cetris {
     class Runner {
@@ -8,6 +9,8 @@ namespace Cetris {
         void run();
 
     private:
+		Board board;
+
 		void tick();
 		void render();
 		void init();

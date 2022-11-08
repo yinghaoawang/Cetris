@@ -145,14 +145,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Cetris\Board.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Cetris\Runner.cpp" />
+    <ClCompile Include="Cetris\Tetromino.cpp" />
+    <ClCompile Include="Cetris\Pointf.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.MD" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Cetris\Board.h" />
     <ClInclude Include="Cetris\Runner.h" />
+    <ClInclude Include="Cetris\Tetromino.h" />
+    <ClInclude Include="Cetris\Pointf.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

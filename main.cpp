@@ -1,4 +1,4 @@
-#include "Cetris/Runner.h";
+#include "Cetris/Runner.h"
 
 int main() {
     Cetris::Runner runner;
