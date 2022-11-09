@@ -7,23 +7,17 @@ Runner::Runner() {
 }
 
 void Runner::tick() {
-	rectangle.move(sf::Vector2f(0, rectangle.getSize().y));
+	board.tick();
 }
 
 void Runner::render() {
 	window.clear();
 	board.render(window);
-	window.draw(rectangle);
 	window.display();
 }
 
 void Runner::init() {
 	Board board();
-
-	rectangle.setFillColor(sf::Color::Magenta);
-	rectangle.setOutlineColor(sf::Color::Red);
-	rectangle.setOutlineThickness(-1.f);
-	rectangle.setPosition(sf::Vector2f(0, 0));
 }
 
 void Runner::run() {

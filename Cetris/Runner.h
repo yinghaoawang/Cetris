@@ -23,6 +23,5 @@ namespace Cetris {
 		sf::Time timePerTick = sf::milliseconds(1000.f);
 
 		sf::RenderWindow window{ sf::VideoMode(600, 600), "SFML works!" };
-		sf::RectangleShape rectangle{ sf::Vector2f(20, 20) };
     };
 }

@@ -17,7 +17,13 @@ Board::Board() {
 }
 
 void Board::tick() {
-
+	for (int ti = 0; ti < tetrominos.size(); ti++) {
+		Tetromino& t = tetrominos[ti];
+		for (int pi = 0; pi < t.pieces.size(); pi++) {
+			Tetromino::Piece& p = t.pieces[pi];
+			p.localPosition.y++;
+		}
+	}
 }
 
 void Board::render(sf::RenderWindow& window) {
@@ -35,15 +41,15 @@ void Board::render(sf::RenderWindow& window) {
 		for (int j = 0; j < tiles[i].size(); j++) {
 			if (tiles[i][j] == nullptr) continue;
 			sf::RectangleShape rect(sf::Vector2f(Tile::WIDTH, Tile::HEIGHT));
-			rect.setPosition(sf::Vector2f(position.x + j * Tile::HEIGHT, position.y + i * Tile::WIDTH));
+			rect.setPosition(sf::Vector2f(position.x + j * Tile::WIDTH, position.y + i * Tile::HEIGHT));
 			rect.setFillColor(tiles[i][j]->color);
 			window.draw(rect);
 		}
 	}
 
 	// draw tetrominos
-	for (int i = 0; i < tetrominos.size(); i++) {
-		Tetromino& tetromino = tetrominos[i];
+	for (int ti = 0; ti < tetrominos.size(); ti++) {
+		Tetromino& tetromino = tetrominos[ti];
 		sf::Vector2f tRoundedPosition(round(tetromino.position.x), round(tetromino.position.y));
 		for (int pi = 0; pi < tetromino.pieces.size(); pi++) {
 			Tetromino::Piece& piece = tetromino.pieces[pi];

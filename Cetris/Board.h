@@ -11,6 +11,7 @@ namespace Cetris {
 
 		Board();
 		void render(sf::RenderWindow&);
+		void tick();
 		
 
 		class Tile {
