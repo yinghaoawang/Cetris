@@ -3,6 +3,8 @@
 #include "Tetromino.h"
 
 namespace Cetris {
+	class Tetromino;
+
 	class Board {
 	public:
 		static const int WIDTH = 10;

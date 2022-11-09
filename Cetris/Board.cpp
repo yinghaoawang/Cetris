@@ -8,7 +8,7 @@ Board::Tile::Tile(sf::Color& color) {
 
 Board::Board() {
 	tiles[3][2] = new Tile(const_cast<sf::Color&>(sf::Color::Blue));
-	Tetromino t(sf::Color::Green, sf::Vector2f(5, 10));
+	Tetromino t(*this, sf::Color::Green, sf::Vector2f(5, 10));
 	t.pieces.push_back(Tetromino::Piece(t, sf::Vector2f(-1., 0.)));
 	t.pieces.push_back(Tetromino::Piece(t, sf::Vector2f(0., 0.)));
 	t.pieces.push_back(Tetromino::Piece(t, sf::Vector2f(1., 0.)));
@@ -19,10 +19,8 @@ Board::Board() {
 void Board::tick() {
 	for (int ti = 0; ti < tetrominos.size(); ti++) {
 		Tetromino& t = tetrominos[ti];
-		for (int pi = 0; pi < t.pieces.size(); pi++) {
-			Tetromino::Piece& p = t.pieces[pi];
-			p.localPosition.y++;
-		}
+		t.position.y++;
+		t.rotateClockwise();
 	}
 }
 
