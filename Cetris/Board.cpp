@@ -8,6 +8,16 @@ Board::Tile::Tile(sf::Color& color) {
 
 Board::Board() {
 	tiles[3][2] = new Tile(const_cast<sf::Color&>(sf::Color::Blue));
+	Tetromino t(sf::Color::Green, sf::Vector2f(5, 10));
+	t.pieces.push_back(Tetromino::Piece(t, sf::Vector2f(-1., 0.)));
+	t.pieces.push_back(Tetromino::Piece(t, sf::Vector2f(0., 0.)));
+	t.pieces.push_back(Tetromino::Piece(t, sf::Vector2f(1., 0.)));
+	t.pieces.push_back(Tetromino::Piece(t, sf::Vector2f(0., -1.)));
+	tetrominos.push_back(t);
+}
+
+void Board::tick() {
+
 }
 
 void Board::render(sf::RenderWindow& window) {
@@ -17,7 +27,6 @@ void Board::render(sf::RenderWindow& window) {
 		sf::Vertex(sf::Vector2f(position.x, position.y + HEIGHT * Tile::HEIGHT)),
 		sf::Vertex(sf::Vector2f(position.x + WIDTH * Tile::WIDTH, position.y + HEIGHT * Tile::HEIGHT)),
 		sf::Vertex(sf::Vector2f(position.x + WIDTH * Tile::WIDTH, position.y))
-
 	};
 	window.draw(border, 4, sf::LineStrip);
 
@@ -25,10 +34,24 @@ void Board::render(sf::RenderWindow& window) {
 	for (int i = 0; i < tiles.size(); i++) {
 		for (int j = 0; j < tiles[i].size(); j++) {
 			if (tiles[i][j] == nullptr) continue;
-			sf::Color& color = tiles[i][j]->color;
 			sf::RectangleShape rect(sf::Vector2f(Tile::WIDTH, Tile::HEIGHT));
 			rect.setPosition(sf::Vector2f(position.x + j * Tile::HEIGHT, position.y + i * Tile::WIDTH));
-			rect.setFillColor(color);
+			rect.setFillColor(tiles[i][j]->color);
+			window.draw(rect);
+		}
+	}
+
+	// draw tetrominos
+	for (int i = 0; i < tetrominos.size(); i++) {
+		Tetromino& tetromino = tetrominos[i];
+		sf::Vector2f tRoundedPosition(round(tetromino.position.x), round(tetromino.position.y));
+		for (int pi = 0; pi < tetromino.pieces.size(); pi++) {
+			Tetromino::Piece& piece = tetromino.pieces[pi];
+			sf::RectangleShape rect(sf::Vector2f(Tile::WIDTH, Tile::HEIGHT));
+			sf::Vector2f pRoundedPosition(round(piece.localPosition.x), round(piece.localPosition.y));
+			rect.setPosition(sf::Vector2f(position.x + (tRoundedPosition.x + pRoundedPosition.x) * Tile::WIDTH,
+										  position.y + (tRoundedPosition.y + pRoundedPosition.y) * Tile::HEIGHT));
+			rect.setFillColor(tetromino.color);
 			window.draw(rect);
 		}
 	}
