@@ -27,5 +27,13 @@ namespace Cetris {
 
 		std::vector<std::vector<Tile*>> tiles{ HEIGHT, std::vector<Tile*>(WIDTH, nullptr) };
 		std::vector<Tetromino> tetrominos;
+
+		~Board() {
+			for (int i = 0; i < tiles.size(); i++) {
+				for (int j = 0; j < tiles[i].size(); j++) {
+					delete tiles[i][j];
+				}
+			}
+		}
 	};
 }

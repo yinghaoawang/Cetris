@@ -14,7 +14,6 @@ namespace Cetris {
 
 		for (int pi = 0; pi < pieces.size(); pi++) {
 			Tetromino::Piece& p = pieces[pi];
-			if (p.localPosition.x != newPositions[pi].x) printf("%f %f\n", p.localPosition.x, newPositions[pi].x);
 			p.localPosition.x = newPositions[pi].x;
 			p.localPosition.y = newPositions[pi].y;
 		}
