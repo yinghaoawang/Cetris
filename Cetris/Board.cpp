@@ -20,7 +20,7 @@ void Board::tick() {
 	for (int ti = 0; ti < tetrominos.size(); ti++) {
 		Tetromino& t = tetrominos[ti];
 		t.position.y++;
-		t.rotateClockwise();
+		t.rotateCounterClockwise();
 	}
 }
 
