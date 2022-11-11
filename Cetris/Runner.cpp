@@ -18,14 +18,24 @@ void Runner::render() {
 
 void Runner::init() {
 	Board board();
+	window.setKeyRepeatEnabled(false);
+}
+
+void Runner::manageInput() {
+	board.manageInput(event, window, timeSinceLastTick);
+}
+
+void Runner::resetTickTimer() {
+	timeSinceLastTick = sf::Time::Zero;
 }
 
 void Runner::run() {
 	while (window.isOpen()) {
-		sf::Event event;
 		while (window.pollEvent(event)) {
 			if (event.type == sf::Event::Closed)
 				window.close();
+			else
+				manageInput();
 		}
 
 		sf::Time deltaTime = clock.restart();

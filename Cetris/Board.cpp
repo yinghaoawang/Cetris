@@ -8,19 +8,38 @@ Board::Tile::Tile(sf::Color& color) {
 
 Board::Board() {
 	tiles[3][2] = new Tile(const_cast<sf::Color&>(sf::Color::Blue));
-	Tetromino t(*this, sf::Color::Green, sf::Vector2f(5, 10));
-	t.pieces.push_back(Tetromino::Piece(t, sf::Vector2f(-1., 0.)));
-	t.pieces.push_back(Tetromino::Piece(t, sf::Vector2f(0., 0.)));
-	t.pieces.push_back(Tetromino::Piece(t, sf::Vector2f(1., 0.)));
-	t.pieces.push_back(Tetromino::Piece(t, sf::Vector2f(0., -1.)));
-	tetrominos.push_back(t);
-}
+	tetrominoPtr = new Tetromino(*this, sf::Color::Green, sf::Vector2f(5, 10));
+	tetrominoPtr->pieces.push_back(Tetromino::Piece(*tetrominoPtr, sf::Vector2f(-1., 0.)));
+	tetrominoPtr->pieces.push_back(Tetromino::Piece(*tetrominoPtr, sf::Vector2f(0., 0.)));
+	tetrominoPtr->pieces.push_back(Tetromino::Piece(*tetrominoPtr, sf::Vector2f(1., 0.)));
+	tetrominoPtr->pieces.push_back(Tetromino::Piece(*tetrominoPtr, sf::Vector2f(0., -1.)));
+};
 
 void Board::tick() {
-	for (int ti = 0; ti < tetrominos.size(); ti++) {
-		Tetromino& t = tetrominos[ti];
-		t.position.y++;
-		t.rotateCounterClockwise();
+	tetrominoPtr->position.y++;
+}
+
+void Board::manageInput(sf::Event& event, sf::RenderWindow& window, sf::Time& timeSinceLastTick) {
+	if (event.type == sf::Event::KeyPressed) {
+		if (event.key.code == sf::Keyboard::Q) {
+			tetrominoPtr->rotateCounterClockwise();
+			render(window);
+		} else if (event.key.code == sf::Keyboard::E) {
+			tetrominoPtr->rotateClockwise();
+			render(window);
+		} else if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) {
+			tetrominoPtr->position.y++;
+			timeSinceLastTick = sf::Time::Zero; // resets tick timer
+			render(window);
+		} else if (event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::Left) {
+			tetrominoPtr->position.x--;
+			render(window);
+		} else if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) {
+			tetrominoPtr->position.x++;
+			render(window);
+		} else if (event.key.code == sf::Keyboard::Space) {
+
+		}
 	}
 }
 
@@ -45,18 +64,15 @@ void Board::render(sf::RenderWindow& window) {
 		}
 	}
 
-	// draw tetrominos
-	for (int ti = 0; ti < tetrominos.size(); ti++) {
-		Tetromino& tetromino = tetrominos[ti];
-		sf::Vector2f tRoundedPosition(round(tetromino.position.x), round(tetromino.position.y));
-		for (int pi = 0; pi < tetromino.pieces.size(); pi++) {
-			Tetromino::Piece& piece = tetromino.pieces[pi];
-			sf::RectangleShape rect(sf::Vector2f(Tile::WIDTH, Tile::HEIGHT));
-			sf::Vector2f pRoundedPosition(round(piece.localPosition.x), round(piece.localPosition.y));
-			rect.setPosition(sf::Vector2f(position.x + (tRoundedPosition.x + pRoundedPosition.x) * Tile::WIDTH,
-										  position.y + (tRoundedPosition.y + pRoundedPosition.y) * Tile::HEIGHT));
-			rect.setFillColor(tetromino.color);
-			window.draw(rect);
-		}
+	// draw tetromino
+	sf::Vector2f tRoundedPosition(round(tetrominoPtr->position.x), round(tetrominoPtr->position.y));
+	for (int pi = 0; pi < tetrominoPtr->pieces.size(); pi++) {
+		Tetromino::Piece& piece = tetrominoPtr->pieces[pi];
+		sf::RectangleShape rect(sf::Vector2f(Tile::WIDTH, Tile::HEIGHT));
+		sf::Vector2f pRoundedPosition(round(piece.localPosition.x), round(piece.localPosition.y));
+		rect.setPosition(sf::Vector2f(position.x + (tRoundedPosition.x + pRoundedPosition.x) * Tile::WIDTH,
+										position.y + (tRoundedPosition.y + pRoundedPosition.y) * Tile::HEIGHT));
+		rect.setFillColor(tetrominoPtr->color);
+		window.draw(rect);
 	}
 }

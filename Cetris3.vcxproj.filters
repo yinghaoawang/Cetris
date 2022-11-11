@@ -38,7 +38,7 @@
     <ClInclude Include="Cetris\Board.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Cetris\Tetromino.h">
+    <ClInclude Include="Tetromino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

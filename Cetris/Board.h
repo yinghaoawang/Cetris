@@ -11,10 +11,9 @@ namespace Cetris {
 		static const int HEIGHT = 20;
 		sf::Vector2f position{ 50., 20.};
 
-		Board();
 		void render(sf::RenderWindow&);
 		void tick();
-		
+		void manageInput(sf::Event&, sf::RenderWindow&, sf::Time&);
 
 		class Tile {
 		public:
@@ -26,14 +25,16 @@ namespace Cetris {
 		};
 
 		std::vector<std::vector<Tile*>> tiles{ HEIGHT, std::vector<Tile*>(WIDTH, nullptr) };
-		std::vector<Tetromino> tetrominos;
+		Tetromino* tetrominoPtr;
 
+		Board();
 		~Board() {
 			for (int i = 0; i < tiles.size(); i++) {
 				for (int j = 0; j < tiles[i].size(); j++) {
 					delete tiles[i][j];
 				}
 			}
+			delete tetrominoPtr;
 		}
 	};
 }

@@ -15,5 +15,7 @@ int main() {
     _CrtDumpMemoryLeaks();
     if (_CrtDumpMemoryLeaks() == true)
         std::cerr << "MEMORY LEAK!" << std::endl;
+    else
+        std::cout << "No memory leaks detected.";
     return 0;
 }
