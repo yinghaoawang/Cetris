@@ -25,6 +25,10 @@ namespace Cetris {
 		}
 	}
 
+	sf::Vector2f Tetromino::Piece::getRoundedWorldPosition() {
+		return sf::Vector2f(round(tetromino.position.x) + round(localPosition.x), round(tetromino.position.y) + round(localPosition.y));
+	}
+
 	bool Tetromino::rotateClockwise() {
 		return rotate(90 * (M_PI / 180));
 	}

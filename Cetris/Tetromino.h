@@ -13,6 +13,7 @@ namespace Cetris {
 			sf::Vector2f localPosition;
 
 			Piece(Tetromino& t, sf::Vector2f p) : tetromino(t), localPosition(p) {};
+			sf::Vector2f getRoundedWorldPosition();
 		};
 
 		

@@ -39,6 +39,7 @@ namespace Cetris {
 
 		bool isTetrominoKickable(std::vector<sf::Vector2f>&);
 		void handleTetrominoCollision();
+		bool isTetrominoOutOfBounds(sf::Vector2i);
 		bool isTetrominoColliding(sf::Vector2i);
 
 	private:

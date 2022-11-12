@@ -7,7 +7,7 @@ Board::Tile::Tile(sf::Color& color) {
 }
 
 Board::Board() {
-	tiles[3][2] = new Tile(const_cast<sf::Color&>(sf::Color::Blue));
+	tiles[19][5] = new Tile(const_cast<sf::Color&>(sf::Color::Blue));
 	spawnNewTetromino();
 }
 
@@ -34,8 +34,36 @@ void Board::handleTetrominoCollision() {
 	spawnNewTetromino();
 }
 
+bool Board::isTetrominoOutOfBounds(sf::Vector2i offset = sf::Vector2i(0, 0)) {
+	std::vector<Tetromino::Piece>& pieces = tetrominoPtr->pieces;
+	for (int pi = 0; pi < pieces.size(); pi++) {
+		Tetromino::Piece& piece = pieces[pi];
+		int x = piece.getRoundedWorldPosition().x;
+		int y = piece.getRoundedWorldPosition().y;
+		if (y > HEIGHT - 1 || x < 0 || x > WIDTH - 1) {
+			printf("off the board!!\n");
+			return true;
+		}
+	}
+	return false;
+}
+
 bool Board::isTetrominoColliding(sf::Vector2i offset = sf::Vector2i(0, 0)) {
-	
+	if (isTetrominoOutOfBounds(offset)) {
+		return true;
+	}
+
+	std::vector<Tetromino::Piece>& pieces = tetrominoPtr->pieces;
+	for (int pi = 0; pi < pieces.size(); pi++) {
+		Tetromino::Piece& piece = pieces[pi];
+		int x = piece.getRoundedWorldPosition().x;
+		int y = piece.getRoundedWorldPosition().y;
+		printf("pos: %d %d\n", x, y);
+		if (tiles[y][x] != NULL) {
+			printf("colliding on %d %d!!\n", x, y);
+			return true;
+		}
+	}
 	return false;
 }
 
@@ -107,13 +135,11 @@ void Board::render(sf::RenderWindow& window) {
 	}
 
 	// draw tetromino
-	sf::Vector2f tRoundedPosition(round(tetrominoPtr->position.x), round(tetrominoPtr->position.y));
 	for (int pi = 0; pi < tetrominoPtr->pieces.size(); pi++) {
 		Tetromino::Piece& piece = tetrominoPtr->pieces[pi];
 		sf::RectangleShape rect(sf::Vector2f(Tile::WIDTH, Tile::HEIGHT));
-		sf::Vector2f pRoundedPosition(round(piece.localPosition.x), round(piece.localPosition.y));
-		rect.setPosition(sf::Vector2f(position.x + (tRoundedPosition.x + pRoundedPosition.x) * Tile::WIDTH,
-										position.y + (tRoundedPosition.y + pRoundedPosition.y) * Tile::HEIGHT));
+		rect.setPosition(sf::Vector2f(position.x + piece.getRoundedWorldPosition().x * Tile::WIDTH,
+									  position.y + piece.getRoundedWorldPosition().y * Tile::HEIGHT));
 		rect.setFillColor(tetrominoPtr->color);
 		window.draw(rect);
 	}
