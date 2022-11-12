@@ -12,7 +12,14 @@ Board::Board() {
 }
 
 void Board::solidifyTetromino() {
-
+	std::vector<Tetromino::Piece>& pieces = tetrominoPtr->pieces;
+	for (int pi = 0; pi < pieces.size(); pi++) {
+		Tetromino::Piece& piece = pieces[pi];
+		int x = piece.getRoundedWorldPosition().x;
+		int y = piece.getRoundedWorldPosition().y;
+		tiles[y][x] = new Tile(tetrominoPtr->color);
+	}
+	delete tetrominoPtr;
 }
 
 bool Board::isTetrominoKickable(std::vector<sf::Vector2f>& kickOffsetOut) {
@@ -38,8 +45,8 @@ bool Board::isTetrominoOutOfBounds(sf::Vector2i offset = sf::Vector2i(0, 0)) {
 	std::vector<Tetromino::Piece>& pieces = tetrominoPtr->pieces;
 	for (int pi = 0; pi < pieces.size(); pi++) {
 		Tetromino::Piece& piece = pieces[pi];
-		int x = piece.getRoundedWorldPosition().x;
-		int y = piece.getRoundedWorldPosition().y;
+		int x = piece.getRoundedWorldPosition().x + offset.x;
+		int y = piece.getRoundedWorldPosition().y + offset.y;
 		if (y > HEIGHT - 1 || x < 0 || x > WIDTH - 1) {
 			printf("off the board!!\n");
 			return true;
@@ -56,8 +63,8 @@ bool Board::isTetrominoColliding(sf::Vector2i offset = sf::Vector2i(0, 0)) {
 	std::vector<Tetromino::Piece>& pieces = tetrominoPtr->pieces;
 	for (int pi = 0; pi < pieces.size(); pi++) {
 		Tetromino::Piece& piece = pieces[pi];
-		int x = piece.getRoundedWorldPosition().x;
-		int y = piece.getRoundedWorldPosition().y;
+		int x = piece.getRoundedWorldPosition().x + offset.x;
+		int y = piece.getRoundedWorldPosition().y + offset.y;
 		printf("pos: %d %d\n", x, y);
 		if (tiles[y][x] != NULL) {
 			printf("colliding on %d %d!!\n", x, y);
@@ -83,10 +90,6 @@ void Board::tick() {
 	}
 
 	tetrominoPtr->position.y++;
-	if (isTetrominoColliding(oneDown)) {
-		handleTetrominoCollision();
-		return;
-	}
 }
 
 void Board::manageInput(sf::Event& event, sf::RenderWindow& window, sf::Time& timeSinceLastTick) {
