@@ -36,5 +36,16 @@ namespace Cetris {
 			}
 			delete tetrominoPtr;
 		}
+
+		bool isTetrominoKickable(std::vector<sf::Vector2f>&);
+		void handleTetrominoCollision();
+		bool isTetrominoColliding(sf::Vector2i);
+
+	private:
+		void solidifyTetromino();
+		void spawnNewTetromino();
+		bool anyLinesClearable(std::vector<int>&);
+		void clearLines(const std::vector<int>&);
+
 	};
 }

@@ -12,12 +12,17 @@ namespace Cetris {
 			newPositions.push_back(newPosition);
 		}
 
+		setPiecePositions(newPositions);
+
+		return true;
+	}
+
+	void Tetromino::setPiecePositions(const std::vector<sf::Vector2f>& positions) {
 		for (int pi = 0; pi < pieces.size(); pi++) {
 			Tetromino::Piece& p = pieces[pi];
-			p.localPosition.x = newPositions[pi].x;
-			p.localPosition.y = newPositions[pi].y;
+			p.localPosition.x = positions[pi].x;
+			p.localPosition.y = positions[pi].y;
 		}
-		return true;
 	}
 
 	bool Tetromino::rotateClockwise() {

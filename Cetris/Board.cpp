@@ -8,15 +8,57 @@ Board::Tile::Tile(sf::Color& color) {
 
 Board::Board() {
 	tiles[3][2] = new Tile(const_cast<sf::Color&>(sf::Color::Blue));
+	spawnNewTetromino();
+}
+
+void Board::solidifyTetromino() {
+
+}
+
+bool Board::isTetrominoKickable(std::vector<sf::Vector2f>& kickOffsetOut) {
+	return false;
+}
+
+void Board::spawnNewTetromino() {
 	tetrominoPtr = new Tetromino(*this, sf::Color::Green, sf::Vector2f(5, 10));
 	tetrominoPtr->pieces.push_back(Tetromino::Piece(*tetrominoPtr, sf::Vector2f(-1., 0.)));
 	tetrominoPtr->pieces.push_back(Tetromino::Piece(*tetrominoPtr, sf::Vector2f(0., 0.)));
 	tetrominoPtr->pieces.push_back(Tetromino::Piece(*tetrominoPtr, sf::Vector2f(1., 0.)));
 	tetrominoPtr->pieces.push_back(Tetromino::Piece(*tetrominoPtr, sf::Vector2f(0., -1.)));
-};
+}
+
+void Board::handleTetrominoCollision() {
+	solidifyTetromino();
+	std::vector<int> clearableLines;
+	if (anyLinesClearable(clearableLines)) clearLines(clearableLines);
+	spawnNewTetromino();
+}
+
+bool Board::isTetrominoColliding(sf::Vector2i offset = sf::Vector2i(0, 0)) {
+	
+	return false;
+}
+
+bool Board::anyLinesClearable(std::vector<int>& clearableLinesOut) {
+	return false;
+}
+
+void Board::clearLines(const std::vector<int>& linesToClear) {
+
+}
 
 void Board::tick() {
+	static sf::Vector2i oneDown(0, 1);
+	if (isTetrominoColliding(oneDown)) {
+		handleTetrominoCollision();
+		return;
+	}
+
 	tetrominoPtr->position.y++;
+	if (isTetrominoColliding(oneDown)) {
+		handleTetrominoCollision();
+		return;
+	}
 }
 
 void Board::manageInput(sf::Event& event, sf::RenderWindow& window, sf::Time& timeSinceLastTick) {
