@@ -37,7 +37,7 @@ namespace Cetris {
 			delete tetrominoPtr;
 		}
 
-		bool isTetrominoKickable(std::vector<sf::Vector2f>&);
+		bool isTetrominoKickable(std::vector<sf::Vector2f>*);
 		void handleTetrominoCollision();
 		bool isTetrominoOutOfBounds(sf::Vector2i);
 		bool isTetrominoColliding(sf::Vector2i);
@@ -45,8 +45,8 @@ namespace Cetris {
 	private:
 		void solidifyTetromino();
 		void spawnNewTetromino();
-		bool anyLinesClearable(std::vector<int>&);
-		void clearLines(const std::vector<int>&);
+		bool anyRowsClearable(std::vector<int>*);
+		void clearRows(const std::vector<int>&);
 
 	};
 }

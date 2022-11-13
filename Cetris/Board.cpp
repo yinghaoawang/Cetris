@@ -8,6 +8,12 @@ Board::Tile::Tile(sf::Color& color) {
 
 Board::Board() {
 	tiles[19][5] = new Tile(const_cast<sf::Color&>(sf::Color::Blue));
+	tiles[19][0] = new Tile(const_cast<sf::Color&>(sf::Color::Blue));
+	tiles[19][1] = new Tile(const_cast<sf::Color&>(sf::Color::Blue));
+	tiles[19][2] = new Tile(const_cast<sf::Color&>(sf::Color::Blue));
+	tiles[19][3] = new Tile(const_cast<sf::Color&>(sf::Color::Blue));
+	tiles[19][4] = new Tile(const_cast<sf::Color&>(sf::Color::Blue));
+	tiles[19][9] = new Tile(const_cast<sf::Color&>(sf::Color::Blue));
 	spawnNewTetromino();
 }
 
@@ -22,7 +28,7 @@ void Board::solidifyTetromino() {
 	delete tetrominoPtr;
 }
 
-bool Board::isTetrominoKickable(std::vector<sf::Vector2f>& kickOffsetOut) {
+bool Board::isTetrominoKickable(std::vector<sf::Vector2f>* kickOffsetOut) {
 	return false;
 }
 
@@ -36,8 +42,14 @@ void Board::spawnNewTetromino() {
 
 void Board::handleTetrominoCollision() {
 	solidifyTetromino();
-	std::vector<int> clearableLines;
-	if (anyLinesClearable(clearableLines)) clearLines(clearableLines);
+	std::vector<int>* clearableLines = new std::vector<int>();;
+	while (anyRowsClearable(clearableLines)) {
+		sort(clearableLines->begin(), clearableLines->end());
+		printf("%d\n", clearableLines->size());
+		clearRows(*clearableLines);
+		clearableLines->clear();
+	}
+	delete clearableLines;
 	spawnNewTetromino();
 }
 
@@ -66,7 +78,7 @@ bool Board::isTetrominoColliding(sf::Vector2i offset = sf::Vector2i(0, 0)) {
 		int x = piece.getRoundedWorldPosition().x + offset.x;
 		int y = piece.getRoundedWorldPosition().y + offset.y;
 		printf("pos: %d %d\n", x, y);
-		if (tiles[y][x] != NULL) {
+		if (tiles[y][x] != nullptr) {
 			printf("colliding on %d %d!!\n", x, y);
 			return true;
 		}
@@ -74,12 +86,32 @@ bool Board::isTetrominoColliding(sf::Vector2i offset = sf::Vector2i(0, 0)) {
 	return false;
 }
 
-bool Board::anyLinesClearable(std::vector<int>& clearableLinesOut) {
+bool Board::anyRowsClearable(std::vector<int>* clearableRowsOut) {
+	for (int i = 0; i < tiles.size(); i++) {
+		bool rowIsClearable = true;
+		for (int j = 0; j < tiles[i].size(); j++) {
+			if (tiles[i][j] == nullptr) {
+				rowIsClearable = false;
+				break;
+			}
+		}
+
+		if (rowIsClearable && clearableRowsOut != nullptr) clearableRowsOut->push_back(i);
+	}
+	if (clearableRowsOut != nullptr && clearableRowsOut->size() > 0) return true;
 	return false;
 }
 
-void Board::clearLines(const std::vector<int>& linesToClear) {
-
+void Board::clearRows(const std::vector<int>& rowsToClear) {
+	for (int ri = rowsToClear.size() - 1; ri >= 0; ri--) {
+		int row = rowsToClear[ri];
+		for (int j = 0; j < tiles[row].size(); j++) {
+			delete tiles[row][j];
+		}
+		tiles.erase(tiles.begin() + row);
+	}
+	while (tiles.size() < HEIGHT) tiles.insert(tiles.begin(), std::vector<Tile*>(WIDTH, nullptr)); // could be made more efficient
+	printf("\n");
 }
 
 void Board::tick() {
