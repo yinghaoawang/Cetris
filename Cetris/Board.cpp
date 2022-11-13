@@ -28,7 +28,22 @@ void Board::solidifyTetromino() {
 	delete tetrominoPtr;
 }
 
-bool Board::isTetrominoKickable(std::vector<sf::Vector2f>* kickOffsetOut) {
+// Uses simple kick algorithm of testing one position to the right and one to the left
+bool Board::isTetrominoKickable(Tetromino& tetromino, sf::Vector2i* kickOffsetOut) {
+	// right
+	if (!isTetrominoColliding(tetromino, sf::Vector2i(1, 0))) {
+		kickOffsetOut->x = 1;
+		kickOffsetOut->y = 0;
+		return true;
+	}
+
+	// left
+	if (!isTetrominoColliding(tetromino, sf::Vector2i(-1, 0))) {
+		kickOffsetOut->x = -1;
+		kickOffsetOut->y = 0;
+		return true;
+	}
+
 	return false;
 }
 
@@ -53,8 +68,8 @@ void Board::handleTetrominoCollision() {
 	spawnNewTetromino();
 }
 
-bool Board::isTetrominoOutOfBounds(sf::Vector2i offset = sf::Vector2i(0, 0)) {
-	std::vector<Tetromino::Piece>& pieces = tetrominoPtr->pieces;
+bool Board::isTetrominoOutOfBounds(Tetromino& tetromino, sf::Vector2i offset = sf::Vector2i(0, 0)) {
+	std::vector<Tetromino::Piece>& pieces = tetromino.pieces;
 	for (int pi = 0; pi < pieces.size(); pi++) {
 		Tetromino::Piece& piece = pieces[pi];
 		int x = piece.getRoundedWorldPosition().x + offset.x;
@@ -67,12 +82,12 @@ bool Board::isTetrominoOutOfBounds(sf::Vector2i offset = sf::Vector2i(0, 0)) {
 	return false;
 }
 
-bool Board::isTetrominoColliding(sf::Vector2i offset = sf::Vector2i(0, 0)) {
-	if (isTetrominoOutOfBounds(offset)) {
+bool Board::isTetrominoColliding(Tetromino& tetromino, sf::Vector2i offset = sf::Vector2i(0, 0)) {
+	if (isTetrominoOutOfBounds(tetromino, offset)) {
 		return true;
 	}
 
-	std::vector<Tetromino::Piece>& pieces = tetrominoPtr->pieces;
+	std::vector<Tetromino::Piece>& pieces = tetromino.pieces;
 	for (int pi = 0; pi < pieces.size(); pi++) {
 		Tetromino::Piece& piece = pieces[pi];
 		int x = piece.getRoundedWorldPosition().x + offset.x;
@@ -116,7 +131,7 @@ void Board::clearRows(const std::vector<int>& rowsToClear) {
 
 void Board::tick() {
 	static sf::Vector2i oneDown(0, 1);
-	if (isTetrominoColliding(oneDown)) {
+	if (isTetrominoColliding(*tetrominoPtr, oneDown)) {
 		handleTetrominoCollision();
 		return;
 	}
@@ -127,24 +142,44 @@ void Board::tick() {
 void Board::manageInput(sf::Event& event, sf::RenderWindow& window, sf::Time& timeSinceLastTick) {
 	if (event.type == sf::Event::KeyPressed) {
 		if (event.key.code == sf::Keyboard::Q) {
-			tetrominoPtr->rotateCounterClockwise();
-			render(window);
+			Tetromino tmp(*tetrominoPtr);
+			tmp.rotateCounterClockwise();
+			if (!isTetrominoColliding(tmp)) {
+				tetrominoPtr->rotateCounterClockwise();
+				render(window);
+			} else {
+				sf::Vector2i kickOffsetOut;
+				if (isTetrominoKickable(tmp, &kickOffsetOut)) {
+					tmp.position.x += kickOffsetOut.x;
+					tmp.position.y += kickOffsetOut.y;
+					tetrominoPtr->setPiecePositions(tmp.pieces);
+					tetrominoPtr->position.x = tmp.position.x;
+					tetrominoPtr->position.y = tmp.position.y;
+					render(window);
+				}
+			}
 		} else if (event.key.code == sf::Keyboard::E) {
-			tetrominoPtr->rotateClockwise();
-			render(window);
+			Tetromino tmp(*tetrominoPtr);
+			tmp.rotateClockwise();
+			if (!isTetrominoColliding(tmp)) {
+				tetrominoPtr->rotateClockwise();
+				render(window);
+			} else {
+
+			}
 		} else if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) {
-			if (!isTetrominoColliding(sf::Vector2i(0, 1))) {
+			if (!isTetrominoColliding(*tetrominoPtr, sf::Vector2i(0, 1))) {
 				tetrominoPtr->position.y++;
 				timeSinceLastTick = sf::Time::Zero; // resets tick timer
 				render(window);
 			}
 		} else if (event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::Left) {
-			if (!isTetrominoColliding(sf::Vector2i(-1, 0))) {
+			if (!isTetrominoColliding(*tetrominoPtr, sf::Vector2i(-1, 0))) {
 				tetrominoPtr->position.x--;
 				render(window);
 			}
 		} else if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) {
-			if (!isTetrominoColliding(sf::Vector2i(1, 0))) {
+			if (!isTetrominoColliding(*tetrominoPtr, sf::Vector2i(1, 0))) {
 				tetrominoPtr->position.x++;
 				render(window);
 			}

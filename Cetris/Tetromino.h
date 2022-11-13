@@ -25,6 +25,7 @@ namespace Cetris {
 		Tetromino(Board& b, const sf::Color& c, sf::Vector2f p) : board(b), color(c), position(p) {};
 		bool rotateClockwise();
 		bool rotateCounterClockwise();
+		void setPiecePositions(const std::vector<Piece>&);
 		void setPiecePositions(const std::vector<sf::Vector2f>&);
 
 	protected:

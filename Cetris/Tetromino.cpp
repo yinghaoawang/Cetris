@@ -17,6 +17,14 @@ namespace Cetris {
 		return true;
 	}
 
+	void Tetromino::setPiecePositions(const std::vector<Piece>& positions) {
+		for (int pi = 0; pi < pieces.size(); pi++) {
+			Tetromino::Piece& p = pieces[pi];
+			p.localPosition.x = positions[pi].localPosition.x;
+			p.localPosition.y = positions[pi].localPosition.y;
+		}
+	}
+
 	void Tetromino::setPiecePositions(const std::vector<sf::Vector2f>& positions) {
 		for (int pi = 0; pi < pieces.size(); pi++) {
 			Tetromino::Piece& p = pieces[pi];
