@@ -133,15 +133,21 @@ void Board::manageInput(sf::Event& event, sf::RenderWindow& window, sf::Time& ti
 			tetrominoPtr->rotateClockwise();
 			render(window);
 		} else if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) {
-			tetrominoPtr->position.y++;
-			timeSinceLastTick = sf::Time::Zero; // resets tick timer
-			render(window);
+			if (!isTetrominoColliding(sf::Vector2i(0, 1))) {
+				tetrominoPtr->position.y++;
+				timeSinceLastTick = sf::Time::Zero; // resets tick timer
+				render(window);
+			}
 		} else if (event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::Left) {
-			tetrominoPtr->position.x--;
-			render(window);
+			if (!isTetrominoColliding(sf::Vector2i(-1, 0))) {
+				tetrominoPtr->position.x--;
+				render(window);
+			}
 		} else if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) {
-			tetrominoPtr->position.x++;
-			render(window);
+			if (!isTetrominoColliding(sf::Vector2i(1, 0))) {
+				tetrominoPtr->position.x++;
+				render(window);
+			}
 		} else if (event.key.code == sf::Keyboard::Space) {
 
 		}
