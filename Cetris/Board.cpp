@@ -23,12 +23,13 @@ void Board::solidifyTetromino() {
 		Tetromino::Piece& piece = pieces[pi];
 		int x = piece.getRoundedWorldPosition().x;
 		int y = piece.getRoundedWorldPosition().y;
+		delete tiles[y][x];
 		tiles[y][x] = new Tile(tetrominoPtr->color);
 	}
 	delete tetrominoPtr;
 }
 
-// Uses simple kick algorithm of testing one position to the right and one to the left
+// Uses simple kick algorithm: check one to right and one to left
 bool Board::isTetrominoKickable(Tetromino& tetromino, sf::Vector2i* kickOffsetOut) {
 	// right
 	if (!isTetrominoColliding(tetromino, sf::Vector2i(1, 0))) {
@@ -47,12 +48,23 @@ bool Board::isTetrominoKickable(Tetromino& tetromino, sf::Vector2i* kickOffsetOu
 	return false;
 }
 
+void setTPiece(Tetromino& tetromino) {
+	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(-1., 0.)));
+	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(0., 0.)));
+	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(1., 0.)));
+	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(0., -1.)));
+}
+
+void setOPiece(Tetromino& tetromino) {
+	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(-.5, -.5)));
+	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(-.5, .5)));
+	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(.5, -.5)));
+	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(.5, .5)));
+}
+
 void Board::spawnNewTetromino() {
-	tetrominoPtr = new Tetromino(*this, sf::Color::Green, sf::Vector2f(5, 10));
-	tetrominoPtr->pieces.push_back(Tetromino::Piece(*tetrominoPtr, sf::Vector2f(-1., 0.)));
-	tetrominoPtr->pieces.push_back(Tetromino::Piece(*tetrominoPtr, sf::Vector2f(0., 0.)));
-	tetrominoPtr->pieces.push_back(Tetromino::Piece(*tetrominoPtr, sf::Vector2f(1., 0.)));
-	tetrominoPtr->pieces.push_back(Tetromino::Piece(*tetrominoPtr, sf::Vector2f(0., -1.)));
+	tetrominoPtr = new Tetromino(*this, sf::Color::Green, sf::Vector2f(5, 1));
+	setOPiece(*tetrominoPtr);
 }
 
 void Board::handleTetrominoCollision() {
@@ -92,9 +104,7 @@ bool Board::isTetrominoColliding(Tetromino& tetromino, sf::Vector2i offset = sf:
 		Tetromino::Piece& piece = pieces[pi];
 		int x = piece.getRoundedWorldPosition().x + offset.x;
 		int y = piece.getRoundedWorldPosition().y + offset.y;
-		printf("pos: %d %d\n", x, y);
 		if (tiles[y][x] != nullptr) {
-			printf("colliding on %d %d!!\n", x, y);
 			return true;
 		}
 	}
@@ -141,7 +151,7 @@ void Board::tick() {
 
 void Board::manageInput(sf::Event& event, sf::RenderWindow& window, sf::Time& timeSinceLastTick) {
 	if (event.type == sf::Event::KeyPressed) {
-		if (event.key.code == sf::Keyboard::Q) {
+		if (event.key.code == sf::Keyboard::Q || event.key.code == sf::Keyboard::Z) {
 			Tetromino tmp(*tetrominoPtr);
 			tmp.rotateCounterClockwise();
 			if (!isTetrominoColliding(tmp)) {
@@ -158,7 +168,7 @@ void Board::manageInput(sf::Event& event, sf::RenderWindow& window, sf::Time& ti
 					render(window);
 				}
 			}
-		} else if (event.key.code == sf::Keyboard::E) {
+		} else if (event.key.code == sf::Keyboard::E || event.key.code == sf::Keyboard::X || event.key.code == sf::Keyboard::Up) {
 			Tetromino tmp(*tetrominoPtr);
 			tmp.rotateClockwise();
 			if (!isTetrominoColliding(tmp)) {
@@ -184,21 +194,16 @@ void Board::manageInput(sf::Event& event, sf::RenderWindow& window, sf::Time& ti
 				render(window);
 			}
 		} else if (event.key.code == sf::Keyboard::Space) {
-
+			while (!isTetrominoColliding(*tetrominoPtr, sf::Vector2i(0, 1))) {
+				tetrominoPtr->position.y++;
+			}
+			handleTetrominoCollision();
+			render(window);
 		}
 	}
 }
 
 void Board::render(sf::RenderWindow& window) {
-	// draw border
-	sf::Vertex border[] = {
-		sf::Vertex(sf::Vector2f(position.x, position.y)),
-		sf::Vertex(sf::Vector2f(position.x, position.y + HEIGHT * Tile::HEIGHT)),
-		sf::Vertex(sf::Vector2f(position.x + WIDTH * Tile::WIDTH, position.y + HEIGHT * Tile::HEIGHT)),
-		sf::Vertex(sf::Vector2f(position.x + WIDTH * Tile::WIDTH, position.y))
-	};
-	window.draw(border, 4, sf::LineStrip);
-
 	// draw tiles
 	for (int i = 0; i < tiles.size(); i++) {
 		for (int j = 0; j < tiles[i].size(); j++) {
@@ -209,6 +214,15 @@ void Board::render(sf::RenderWindow& window) {
 			window.draw(rect);
 		}
 	}
+
+	// draw border
+	sf::Vertex border[] = {
+		sf::Vertex(sf::Vector2f(position.x, position.y)),
+		sf::Vertex(sf::Vector2f(position.x, position.y + HEIGHT * Tile::HEIGHT)),
+		sf::Vertex(sf::Vector2f(position.x + WIDTH * Tile::WIDTH, position.y + HEIGHT * Tile::HEIGHT)),
+		sf::Vertex(sf::Vector2f(position.x + WIDTH * Tile::WIDTH, position.y))
+	};
+	window.draw(border, 4, sf::LineStrip);
 
 	// draw tetromino
 	for (int pi = 0; pi < tetrominoPtr->pieces.size(); pi++) {

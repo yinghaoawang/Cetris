@@ -16,6 +16,8 @@ namespace Cetris {
 			sf::Vector2f getRoundedWorldPosition();
 		};
 
+		static double tRound(double);
+
 		
 		std::vector<Piece> pieces;
 		sf::Vector2f position;
@@ -29,6 +31,6 @@ namespace Cetris {
 		void setPiecePositions(const std::vector<sf::Vector2f>&);
 
 	protected:
-		bool rotate(float);
+		bool rotate(double);
 	};
 }

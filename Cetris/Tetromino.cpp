@@ -2,12 +2,12 @@
 #include "Tetromino.h"
 
 namespace Cetris {
-	bool Tetromino::rotate(float rad) {
+	bool Tetromino::rotate(double rad) {
 		std::vector<sf::Vector2f> newPositions;
 		for (int pi = 0; pi < pieces.size(); pi++) {
 			Tetromino::Piece& p = pieces[pi];
-			float s = sin(rad);
-			float c = cos(rad);
+			double s = sin(rad);
+			double c = cos(rad);
 			sf::Vector2f newPosition(p.localPosition.x * c - p.localPosition.y * s, p.localPosition.x * s + p.localPosition.y * c);
 			newPositions.push_back(newPosition);
 		}
@@ -33,8 +33,12 @@ namespace Cetris {
 		}
 	}
 
+	double Tetromino::tRound(double number) {
+		return floor(number + .5);
+	}
+
 	sf::Vector2f Tetromino::Piece::getRoundedWorldPosition() {
-		return sf::Vector2f(round(tetromino.position.x) + round(localPosition.x), round(tetromino.position.y) + round(localPosition.y));
+		return sf::Vector2f(tRound(tetromino.position.x) + tRound(localPosition.x), tRound(tetromino.position.y) + tRound(localPosition.y));
 	}
 
 	bool Tetromino::rotateClockwise() {
