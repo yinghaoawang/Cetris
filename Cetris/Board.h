@@ -42,11 +42,21 @@ namespace Cetris {
 		bool isTetrominoOutOfBounds(Tetromino&, sf::Vector2i);
 		bool isTetrominoColliding(Tetromino&, sf::Vector2i);
 
+		void setIPiece(Tetromino&);
+		void setOPiece(Tetromino&);
+		void setJPiece(Tetromino&);
+		void setLPiece(Tetromino&);
+		void setZPiece(Tetromino&);
+		void setSPiece(Tetromino&);
+		void setTPiece(Tetromino&);
+
+
 	private:
 		void solidifyTetromino();
 		void spawnNewTetromino();
 		bool anyRowsClearable(std::vector<int>*);
 		void clearRows(const std::vector<int>&);
 
+		
 	};
 }

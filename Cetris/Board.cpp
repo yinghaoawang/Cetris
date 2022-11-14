@@ -7,13 +7,6 @@ Board::Tile::Tile(sf::Color& color) {
 }
 
 Board::Board() {
-	tiles[19][5] = new Tile(const_cast<sf::Color&>(sf::Color::Blue));
-	tiles[19][0] = new Tile(const_cast<sf::Color&>(sf::Color::Blue));
-	tiles[19][1] = new Tile(const_cast<sf::Color&>(sf::Color::Blue));
-	tiles[19][2] = new Tile(const_cast<sf::Color&>(sf::Color::Blue));
-	tiles[19][3] = new Tile(const_cast<sf::Color&>(sf::Color::Blue));
-	tiles[19][4] = new Tile(const_cast<sf::Color&>(sf::Color::Blue));
-	tiles[19][9] = new Tile(const_cast<sf::Color&>(sf::Color::Blue));
 	spawnNewTetromino();
 }
 
@@ -48,23 +41,75 @@ bool Board::isTetrominoKickable(Tetromino& tetromino, sf::Vector2i* kickOffsetOu
 	return false;
 }
 
-void setTPiece(Tetromino& tetromino) {
+void Board::setTPiece(Tetromino& tetromino) {
+	tetromino.position = sf::Vector2f(5, 1);
+	tetromino.color = sf::Color::Magenta;
 	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(-1., 0.)));
 	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(0., 0.)));
 	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(1., 0.)));
 	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(0., -1.)));
 }
 
-void setOPiece(Tetromino& tetromino) {
+void Board::setOPiece(Tetromino& tetromino) {
+	tetromino.position = sf::Vector2f(5, 1);
+	tetromino.color = sf::Color::Yellow;
 	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(-.5, -.5)));
 	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(-.5, .5)));
 	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(.5, -.5)));
 	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(.5, .5)));
 }
 
+void Board::setIPiece(Tetromino& tetromino) {
+	tetromino.position = sf::Vector2f(5, 1);
+	tetromino.color = sf::Color::Cyan;
+	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(-1.5, -.5)));
+	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(-.5, -.5)));
+	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(.5, -.5)));
+	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(1.5, -.5)));
+}
+
+void Board::setJPiece(Tetromino& tetromino) {
+	tetromino.position = sf::Vector2f(5, 1);
+	tetromino.color = sf::Color::Blue;
+	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(-1, -1)));
+	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(-1, 0)));
+	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(0, 0)));
+	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(1, 0)));
+}
+
+void Board::setLPiece(Tetromino& tetromino) {
+	tetromino.position = sf::Vector2f(5, 1);
+	tetromino.color = sf::Color(255, 128, 0);
+	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(1, -1)));
+	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(-1, 0)));
+	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(0, 0)));
+	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(1, 0)));
+}
+
+void Board::setSPiece(Tetromino& tetromino) {
+	tetromino.position = sf::Vector2f(5, 1);
+	tetromino.color = sf::Color::Green;
+	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(0, -1)));
+	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(-1, 0)));
+	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(0, 0)));
+	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(1, -1)));
+}
+
+void Board::setZPiece(Tetromino& tetromino) {
+	tetromino.position = sf::Vector2f(5, 1);
+	tetromino.color = sf::Color::Red;
+	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(0, -1)));
+	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(1, 0)));
+	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(0, 0)));
+	tetromino.pieces.push_back(Tetromino::Piece(tetromino, sf::Vector2f(-1, -1)));
+}
+
 void Board::spawnNewTetromino() {
-	tetrominoPtr = new Tetromino(*this, sf::Color::Green, sf::Vector2f(5, 1));
-	setOPiece(*tetrominoPtr);
+	tetrominoPtr = new Tetromino(*this);
+	std::vector<void(Board::*)(Tetromino&)> createFuncs = { &Board::setOPiece, &Board::setIPiece, &Board::setJPiece, &Board::setLPiece, &Board::setZPiece, &Board::setSPiece, &Board::setTPiece };
+	void (Board::*createFunc)(Tetromino&);
+	createFunc = createFuncs[std::rand() % createFuncs.size()];
+	(this->*createFunc)(*tetrominoPtr);
 }
 
 void Board::handleTetrominoCollision() {

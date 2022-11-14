@@ -11,6 +11,7 @@ void run() {
 }
 
 int main() {
+    std::srand(std::time(nullptr));
     run();
     _CrtDumpMemoryLeaks();
     if (_CrtDumpMemoryLeaks() == true)
